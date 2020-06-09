@@ -1,0 +1,2 @@
+rootProject.name='TouchMVP'
+include ':app'

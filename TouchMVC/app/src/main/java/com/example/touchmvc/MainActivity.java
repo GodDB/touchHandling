@@ -1,7 +1,7 @@
 package com.example.touchmvc;
 
+import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridLayout;
@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private ConstraintLayout parentView;
 
     //뷰 위치값
-    private float f_x =0;
-    private float f_y =0;
+    private float press_x =0;
+    private float press_y =0;
 
     //JoyStick list
     ArrayList<JoyStick> joyStick_list = new ArrayList();
@@ -51,9 +51,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int v_height = touch_view.getHeight();
 
         for(int i=0; i<9; i++){
-            int[] joystick_xy = cal_XY(p_width, p_height, v_width, v_height, i);
+
+            //각각 조이스틱 버튼이 가질 x,y값 계산
+            Point joystick_xy = cal_XY(p_width, p_height, v_width, v_height, i);
+
             //조이스틱 버튼과 대응되는 모델 리스트
-            joyStick_list.add(new JoyStick(joystick_xy[0], joystick_xy[1]));
+            joyStick_list.add(new JoyStick(joystick_xy.x, joystick_xy.y));
         }
     }
 
@@ -62,14 +65,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         // x,y 이동거리 = (이동한 x,y지점) - (최초누른 x,y지점)
         if(event.getActionMasked() == MotionEvent.ACTION_DOWN){
-            f_x = event.getX();
-            f_y = event.getY();
+            press_x = event.getX();
+            press_y = event.getY();
         }
         if(event.getActionMasked() == MotionEvent.ACTION_MOVE){
-            float n_x = (event.getX()-f_x);
-            float n_y = (event.getY()-f_y);
-            v.setX(v.getX()+n_x);
-            v.setY(v.getY()+n_y);
+            float dis_x = (event.getX()-press_x);
+            float dis_y = (event.getY()-press_y);
+            v.setX(v.getX()+dis_x);
+            v.setY(v.getY()+dis_y);
         }
         return true;
     }
@@ -87,55 +90,55 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-    public int[] cal_XY(int p_width, int p_height, int v_width, int v_height, int index){
-        int[] joystick_xy = new int[2];
+    public Point cal_XY(int p_width, int p_height, int v_width, int v_height, int index){
+        Point point = new Point();
         if(index == 0) //좌상단
         {
-            joystick_xy[0] = 0;
-            joystick_xy[1] = 0;
+            point.x = 0;
+            point.y = 0;
         }
         else if(index == 1) // 상단
         {
-            joystick_xy[0] = (p_width/2)-(v_width/2);
-            joystick_xy[1] = 0;
+            point.x = (p_width/2)-(v_width/2);
+            point.y = 0;
         }
         else if(index == 2) // 우상단
         {
-            joystick_xy[0] = p_width-v_width;
-            joystick_xy[1] = 0;
+            point.x = p_width-v_width;
+            point.y = 0;
         }
         else if(index == 3) // 좌
         {
-            joystick_xy[0] = 0;
-            joystick_xy[1] = (p_height/2)-(v_height/2);
+            point.x = 0;
+            point.y = (p_height/2)-(v_height/2);
         }
         else if(index ==4) // 중앙
         {
-            joystick_xy[0] = (p_width/2)-(v_width/2);
-            joystick_xy[1] = (p_height/2)-(v_height/2);
+            point.x = (p_width/2)-(v_width/2);
+            point.y = (p_height/2)-(v_height/2);
         }
         else if(index == 5) // 우
         {
-            joystick_xy[0] = p_width-v_width;
-            joystick_xy[1] = (p_height/2)-(v_height/2);
+            point.x = p_width-v_width;
+            point.y = (p_height/2)-(v_height/2);
         }
         else if(index == 6) // 좌하단
         {
-            joystick_xy[0] = 0;
-            joystick_xy[1] = p_height-v_height;
+            point.x = 0;
+            point.y = p_height-v_height;
         }
         else if(index == 7) // 하단
         {
-            joystick_xy[0] = (p_width/2)-(v_width/2);
-            joystick_xy[1] = p_height-v_height;
+            point.x = (p_width/2)-(v_width/2);
+            point.y = p_height-v_height;
         }
         else if(index == 8) // 우하단
         {
-            joystick_xy[0] = p_width-v_width;
-            joystick_xy[1] = p_height-v_height;
+            point.x = p_width-v_width;
+            point.y = p_height-v_height;
         }
 
-        return joystick_xy;
+        return point;
     }
 
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TouchMVC</string>
+    <string name="app_name">TouchMVP</string>
 
     <string name="left_top">↖</string>
     <string name="top">↑</string>
