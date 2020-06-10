@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridLayout;
 
+/** 뷰 **/
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener, MainContract.View {
 
     //프레젠터
@@ -16,13 +17,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //터치 뷰
     private View touch_view;
 
-    //부모 뷰(터치영역)
+    //터치 뷰의 부모
     private ConstraintLayout parentView;
 
-    //터치 뷰 터치 지점
+    //터치 포인트 press 지점
     private float press_x = 0;
     private float press_y = 0;
 
+    /** 뷰 초기화 **/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,10 +44,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         init_btn();
     }
 
+    /** 프레젠터에 모델 생성 요청 **/
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
+        //터치뷰의 부모의 크기 높이, 터치뷰의 크기 높이
         int p_width = parentView.getWidth();
         int p_height = parentView.getHeight();
         int v_width = touch_view.getWidth();
@@ -55,7 +59,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         presenter.createModel(p_width, p_height, v_width, v_height);
     }
 
-    //버튼 클릭시 해당 버튼의 index를 presenter에 전달
+    /** 터치 이벤트 핸들러
+     - 이벤트 발생 시 프레젠터에 x,y변위 계산 요청 **/
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN){
+            press_x = event.getX();
+            press_y = event.getY();
+        }
+        if(event.getActionMasked() == MotionEvent.ACTION_MOVE){
+            float move_x = event.getX();
+            float move_y = event.getY();
+
+            //프레젠터에 x,y변위 계산 요청
+            presenter.cal_displacement(press_x, press_y, move_x, move_y, v.getX(), v.getY());
+        }
+        return true;
+    }
+
+    /** 클릭 이벤트 핸들러
+     - 이벤트 발생 시 프레젠터에 버튼의 인덱스값 전달 **/
     @Override
     public void onClick(View v) {
         //joystick 버튼의 부모
@@ -68,30 +91,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         presenter.callModel(index);
     }
 
-    // 터치 이벤트 presenter에 전달
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getActionMasked() == MotionEvent.ACTION_DOWN){
-            press_x = event.getX();
-            press_y = event.getY();
-        }
-        if(event.getActionMasked() == MotionEvent.ACTION_MOVE){
-            float move_x = event.getX();
-            float move_y = event.getY();
-            presenter.cal_distance(press_x, press_y, move_x, move_y, v.getX(), v.getY());
-        }
-        return true;
-    }
-
-    //터치 뷰에 x,y값 적용
+    /** 터치 뷰에 x,y값 적용 **/
     @Override
     public void setXY(float x, float y) {
         touch_view.setX(x);
         touch_view.setY(y);
     }
 
-
-
+    /** 버튼에 listener 장착 **/
     private void init_btn(){
         findViewById(R.id.leftTop_btn).setOnClickListener(this);
         findViewById(R.id.top_btn).setOnClickListener(this);

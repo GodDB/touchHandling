@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">TouchMVVM</string>
+
+    <string name="left_top">↖</string>
+    <string name="top">↑</string>
+    <string name="right_top">↗</string>
+    <string name="left">←</string>
+    <string name="center">●</string>
+    <string name="right">→</string>
+    <string name="left_bottom">↙</string>
+    <string name="bottom">↓</string>
+    <string name="right_bottom">↘</string>
+
+</resources>

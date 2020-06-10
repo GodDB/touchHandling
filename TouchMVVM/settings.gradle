@@ -1,0 +1,2 @@
+rootProject.name='TouchMVVM'
+include ':app'

@@ -1,5 +1,6 @@
 package com.example.touchmvp;
 
+/** 모델 **/
 public class JoyStick {
     private int x;
     private int y;

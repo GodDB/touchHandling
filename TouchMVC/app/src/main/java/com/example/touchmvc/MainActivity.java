@@ -5,27 +5,27 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridLayout;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import java.util.ArrayList;
 
+/** 컨트롤러 **/
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener {
 
     //터치 뷰
     private View touch_view;
 
-    //부모 뷰(터치영역)
+    //터치 뷰의 부모
     private ConstraintLayout parentView;
 
-    //뷰 위치값
-    private float press_x =0;
-    private float press_y =0;
+    //터치 포인트 press 지점
+    private float press_x;
+    private float press_y;
 
     //JoyStick list
     ArrayList<JoyStick> joyStick_list = new ArrayList();
 
+    /** 뷰 초기화 **/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     }
 
+    /** 모델 데이터 계산 및 모델 리스트에 add **/
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -52,45 +53,58 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         for(int i=0; i<9; i++){
 
-            //각각 조이스틱 버튼이 가질 x,y값 계산
+            //모델 데이터 계산
             Point joystick_xy = cal_XY(p_width, p_height, v_width, v_height, i);
 
-            //조이스틱 버튼과 대응되는 모델 리스트
+            //조이스틱 버튼과 대응되는 모델 리스트 ( 0번째 버튼 - 0번째 모델, 1번째 버튼 - 1번째 모델 ... )
             joyStick_list.add(new JoyStick(joystick_xy.x, joystick_xy.y));
         }
     }
 
+    /** 터치 이벤트 핸들러
+       - 이벤트 발생 시 x,y변위를 계산하여 뷰의 위치 갱신 **/
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        // x,y 이동거리 = (이동한 x,y지점) - (최초누른 x,y지점)
+        // x,y 변위 = (터치포인트 move x,y지점) - (터치포인트 press x,y지점)
         if(event.getActionMasked() == MotionEvent.ACTION_DOWN){
             press_x = event.getX();
             press_y = event.getY();
         }
         if(event.getActionMasked() == MotionEvent.ACTION_MOVE){
+            //x,y변위
             float dis_x = (event.getX()-press_x);
             float dis_y = (event.getY()-press_y);
+
+            //터치 뷰의 x,y + x,y변위
             v.setX(v.getX()+dis_x);
             v.setY(v.getY()+dis_y);
         }
         return true;
     }
 
-    public void init_btn(){
-        findViewById(R.id.leftTop_btn).setOnClickListener(this);
-        findViewById(R.id.top_btn).setOnClickListener(this);
-        findViewById(R.id.rightTop_btn).setOnClickListener(this);
-        findViewById(R.id.left_btn).setOnClickListener(this);
-        findViewById(R.id.center_btn).setOnClickListener(this);
-        findViewById(R.id.right_btn).setOnClickListener(this);
-        findViewById(R.id.leftBottom_btn).setOnClickListener(this);
-        findViewById(R.id.bottom_btn).setOnClickListener(this);
-        findViewById(R.id.rightBottom_btn).setOnClickListener(this);
+    /** 클릭 이벤트 핸들러
+     - 이벤트 발생 시 해당 버튼의 인덱스로 모델 값 호출 **/
+    @Override
+    public void onClick(View v) {
+        //joystick 버튼의 부모
+        GridLayout gridLayout = (GridLayout)v.getParent();
+
+        //누른 joystick 버튼의 인덱스(0~8)
+        int index = gridLayout.indexOfChild(v);
+
+        //버튼 인덱스와 같은 인덱스인 모델 호출
+        int x = joyStick_list.get(index).getX();
+        int y = joyStick_list.get(index).getY();
+
+        touch_view.setX(x);
+        touch_view.setY(y);
     }
 
-
-    public Point cal_XY(int p_width, int p_height, int v_width, int v_height, int index){
+    /** 모델 데이터 계산
+     - 부모 뷰의 좌측 상단(0,0)을 기준으로 뷰를 그리므로 그걸 고려하여 계산함
+     **/
+    private Point cal_XY(int p_width, int p_height, int v_width, int v_height, int index){
         Point point = new Point();
         if(index == 0) //좌상단
         {
@@ -141,20 +155,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return point;
     }
 
-
-    @Override
-    public void onClick(View v) {
-        //joystick 버튼의 부모
-        GridLayout gridLayout = (GridLayout)v.getParent();
-
-        //누른 joystick 버튼의 인덱스(0~8)
-        int index = gridLayout.indexOfChild(v);
-
-        //그 버튼과 대응되는 joystick 모델 호출
-        int x = joyStick_list.get(index).getX();
-        int y = joyStick_list.get(index).getY();
-
-        touch_view.setX(x);
-        touch_view.setY(y);
+    /** 버튼에 리스너 장착 **/
+    private void init_btn(){
+        findViewById(R.id.leftTop_btn).setOnClickListener(this);
+        findViewById(R.id.top_btn).setOnClickListener(this);
+        findViewById(R.id.rightTop_btn).setOnClickListener(this);
+        findViewById(R.id.left_btn).setOnClickListener(this);
+        findViewById(R.id.center_btn).setOnClickListener(this);
+        findViewById(R.id.right_btn).setOnClickListener(this);
+        findViewById(R.id.leftBottom_btn).setOnClickListener(this);
+        findViewById(R.id.bottom_btn).setOnClickListener(this);
+        findViewById(R.id.rightBottom_btn).setOnClickListener(this);
     }
 }
