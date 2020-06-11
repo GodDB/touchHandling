@@ -26,7 +26,6 @@ public class MainViewModel extends BaseObservable {
         }
     }
 
-
     /** 터치 포인트 x,y변위 계산 **/
     public void cal_displacement(float press_x, float press_y, float move_x, float move_y) {
 
@@ -43,7 +42,8 @@ public class MainViewModel extends BaseObservable {
         y.set(new_y);
     }
 
-    /** 조이스틱 버튼 클릭 시 해당 버튼의 인덱스값 전달 **/
+    /** 전달 받은 인덱스로 모델리스트 조회 후
+     *  터치 뷰와 바인딩된 옵저버블한 필드 변수에 값을 set **/
     public void onClick(int index){
 
         //joystick_list에서 인덱스로 값을 가져옴
@@ -59,55 +59,47 @@ public class MainViewModel extends BaseObservable {
     /** 모델 데이터 계산
      - 터치 뷰의 좌측 상단(0,0)을 기준으로 뷰를 그리므로 그걸 고려하여 계산함
      **/
-    private float[] cal_XY(float p_width, float p_height, float v_width, float v_height, float index){
+    private float[] cal_XY(float p_width, float p_height, float v_width, float v_height, int index) {
         float[] xy = new float[2]; // [0] == x , [1] == y
 
-        if(index == 0) //좌상단
-        {
-            xy[0] = -((p_width/2) - (v_width/2));
-            xy[1] = -((p_height/2) - (v_height/2));
+        switch (index) {
+            case 0:
+                xy[0] = -((p_width / 2) - (v_width / 2));
+                xy[1] = -((p_height / 2) - (v_height / 2));
+                break;
+            case 1:
+                xy[0] = 0;
+                xy[1] = -((p_height / 2) - (v_height / 2));
+                break;
+            case 2:
+                xy[0] = (p_width / 2) + (v_width / 2) - v_width;
+                xy[1] = -((p_height / 2) - (v_height / 2));
+                break;
+            case 3:
+                xy[0] = -((p_width / 2) - (v_width / 2));
+                xy[1] = 0;
+                break;
+            case 4:
+                xy[0] = 0;
+                xy[1] = 0;
+                break;
+            case 5:
+                xy[0] = (p_width / 2) + (v_width / 2) - v_width;
+                xy[1] = 0;
+                break;
+            case 6:
+                xy[0] = -((p_width / 2) - (v_width / 2));
+                xy[1] = (p_height / 2) - (v_height / 2);
+                break;
+            case 7:
+                xy[0] = 0;
+                xy[1] = (p_height / 2) - (v_height / 2);
+                break;
+            case 8:
+                xy[0] = (p_width / 2) + (v_width / 2) - v_width;
+                xy[1] = (p_height / 2) - (v_height / 2);
+                break;
         }
-        else if(index == 1) // 상단
-        {
-            xy[0] = 0;
-            xy[1] = -((p_height/2) - (v_height/2));
-        }
-        else if(index == 2) // 우상단
-        {
-            xy[0] = (p_width/2)+(v_width/2)-v_width;
-            xy[1] = -((p_height/2) - (v_height/2));
-        }
-        else if(index == 3) // 좌
-        {
-            xy[0] = -((p_width/2) - (v_width/2));
-            xy[1] = 0;
-        }
-        else if(index ==4) // 중앙
-        {
-            xy[0] = 0;
-            xy[1] = 0;
-        }
-        else if(index == 5) // 우
-        {
-            xy[0] = (p_width/2)+(v_width/2)-v_width;
-            xy[1] = 0;
-        }
-        else if(index == 6) // 좌하단
-        {
-            xy[0] = -((p_width/2) - (v_width/2));
-            xy[1] = (p_height/2) - (v_height/2);
-        }
-        else if(index == 7) // 하단
-        {
-            xy[0] = 0;
-            xy[1] = (p_height/2) - (v_height/2);
-        }
-        else if(index == 8) // 우하단
-        {
-            xy[0] = (p_width/2)+(v_width/2)-v_width;
-            xy[1] = (p_height/2) - (v_height/2);
-        }
-
         return xy;
     }
 

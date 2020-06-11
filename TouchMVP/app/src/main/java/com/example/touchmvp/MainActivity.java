@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onWindowFocusChanged(hasFocus);
 
         //터치뷰의 부모의 크기 높이, 터치뷰의 크기 높이
-        int p_width = parentView.getWidth();
-        int p_height = parentView.getHeight();
-        int v_width = touch_view.getWidth();
-        int v_height = touch_view.getHeight();
+        float p_width = parentView.getWidth();
+        float p_height = parentView.getHeight();
+        float v_width = touch_view.getWidth();
+        float v_height = touch_view.getHeight();
 
         //모델 생성 요청 to presenter
         presenter.createModel(p_width, p_height, v_width, v_height);

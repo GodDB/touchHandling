@@ -14,8 +14,8 @@ import com.example.touchmvvm.databinding.ActivityMainBinding;
 
 /** 뷰 **/
 public class MainActivity extends AppCompatActivity {
-    private static float press_x = 0;
-    private static float press_y = 0;
+    private static float press_x;
+    private static float press_y;
 
     private static MainViewModel mainViewModel;
     private ActivityMainBinding activityMainBinding;

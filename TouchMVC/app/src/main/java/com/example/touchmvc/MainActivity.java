@@ -46,18 +46,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        int p_width = parentView.getWidth();
-        int p_height = parentView.getHeight();
-        int v_width = touch_view.getWidth();
-        int v_height = touch_view.getHeight();
+        //터치뷰의 부모의 크기 높이, 터치뷰의 크기 높이
+        float p_width = parentView.getWidth();
+        float p_height = parentView.getHeight();
+        float v_width = touch_view.getWidth();
+        float v_height = touch_view.getHeight();
 
         for(int i=0; i<9; i++){
 
             //모델 데이터 계산
-            Point joystick_xy = cal_XY(p_width, p_height, v_width, v_height, i);
+            float[] joystick_xy = cal_XY(p_width, p_height, v_width, v_height, i);
 
             //조이스틱 버튼과 대응되는 모델 리스트 ( 0번째 버튼 - 0번째 모델, 1번째 버튼 - 1번째 모델 ... )
-            joyStick_list.add(new JoyStick(joystick_xy.x, joystick_xy.y));
+            joyStick_list.add(new JoyStick(joystick_xy[0], joystick_xy[1]));
         }
     }
 
@@ -94,65 +95,60 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int index = gridLayout.indexOfChild(v);
 
         //버튼 인덱스와 같은 인덱스인 모델 호출
-        int x = joyStick_list.get(index).getX();
-        int y = joyStick_list.get(index).getY();
+        float x = joyStick_list.get(index).getX();
+        float y = joyStick_list.get(index).getY();
 
         touch_view.setX(x);
         touch_view.setY(y);
     }
 
     /** 모델 데이터 계산
-     - 부모 뷰의 좌측 상단(0,0)을 기준으로 뷰를 그리므로 그걸 고려하여 계산함
+     -  터치 뷰는 부모 뷰의 좌측 상단(0,0)을 기준으로 뷰를 그리므로 그걸 고려하여 계산함
      **/
-    private Point cal_XY(int p_width, int p_height, int v_width, int v_height, int index){
-        Point point = new Point();
-        if(index == 0) //좌상단
-        {
-            point.x = 0;
-            point.y = 0;
-        }
-        else if(index == 1) // 상단
-        {
-            point.x = (p_width/2)-(v_width/2);
-            point.y = 0;
-        }
-        else if(index == 2) // 우상단
-        {
-            point.x = p_width-v_width;
-            point.y = 0;
-        }
-        else if(index == 3) // 좌
-        {
-            point.x = 0;
-            point.y = (p_height/2)-(v_height/2);
-        }
-        else if(index ==4) // 중앙
-        {
-            point.x = (p_width/2)-(v_width/2);
-            point.y = (p_height/2)-(v_height/2);
-        }
-        else if(index == 5) // 우
-        {
-            point.x = p_width-v_width;
-            point.y = (p_height/2)-(v_height/2);
-        }
-        else if(index == 6) // 좌하단
-        {
-            point.x = 0;
-            point.y = p_height-v_height;
-        }
-        else if(index == 7) // 하단
-        {
-            point.x = (p_width/2)-(v_width/2);
-            point.y = p_height-v_height;
-        }
-        else if(index == 8) // 우하단
-        {
-            point.x = p_width-v_width;
-            point.y = p_height-v_height;
-        }
+    private float[] cal_XY(float p_width, float p_height, float v_width, float v_height, int index){
 
-        return point;
+        // [0] == x , [1] == y
+        float[] xy = new float[2];
+
+        switch (index){
+            case 0 :
+                xy[0] = 0;
+                xy[1] = 0;
+                break;
+            case 1 :
+                xy[0] = (p_width/2)-(v_width/2);
+                xy[1] = 0;
+                break;
+            case 2 :
+                xy[0] = p_width-v_width;
+                xy[1] = 0;
+                break;
+            case 3 :
+                xy[0] = 0;
+                xy[1] = (p_height/2)-(v_height/2);
+                break;
+            case 4 :
+                xy[0] = (p_width/2)-(v_width/2);
+                xy[1] = (p_height/2)-(v_height/2);
+                break;
+            case 5 :
+                xy[0] = p_width-v_width;
+                xy[1] = (p_height/2)-(v_height/2);
+                break;
+            case 6 :
+                xy[0] = 0;
+                xy[1] = p_height-v_height;
+                break;
+            case 7 :
+                xy[0] = (p_width/2)-(v_width/2);
+                xy[1] = p_height-v_height;
+                break;
+            case 8 :
+                xy[0] = p_width-v_width;
+                xy[1] = p_height-v_height;
+                break;
+        }
+        return xy;
     }
 
     /** 버튼에 리스너 장착 **/

@@ -2,19 +2,20 @@ package com.example.touchmvc;
 
 /** 모델 **/
 public class JoyStick {
-    private int x;
-    private int y;
+    private float x;
+    private float y;
 
-    JoyStick(int x, int y){
+    JoyStick(float x, float y){
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 }
+
